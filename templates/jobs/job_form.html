@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.id %}Edit{% else %}Create{% endif %} Job - Placement Portal{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">{% if form.instance.id %}Edit Job{% else %}Post New Job{% endif %}</h1>
+
+        <div class="form-container">
+            <div class="card">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Job Information</h3>
+
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}">Job Title *</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}<div class="alert alert-error">{{ form.title.errors.0 }}</div>{% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.description.id_for_label }}">Job Description *</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}<div class="alert alert-error">{{ form.description.errors.0 }}</div>{% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.required_skills.id_for_label }}">Required Skills *</label>
+                        {{ form.required_skills }}
+                        <div class="form-help-text">Separate skills with commas (e.g., Python, Django, JavaScript)</div>
+                        {% if form.required_skills.errors %}<div class="alert alert-error">{{ form.required_skills.errors.0 }}</div>{% endif %}
+                    </div>
+
+                    <h3 style="color: var(--primary-color); margin: 2rem 0 1rem;">Job Details</h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                        <div class="form-group">
+                            <label for="{{ form.job_type.id_for_label }}">Job Type *</label>
+                            {{ form.job_type }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.experience_required.id_for_label }}">Experience Required *</label>
+                            {{ form.experience_required }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.location.id_for_label }}">Location *</label>
+                            {{ form.location }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.qualification_required.id_for_label }}">Qualification Required *</label>
+                            {{ form.qualification_required }}
+                        </div>
+                    </div>
+
+                    <h3 style="color: var(--primary-color); margin: 2rem 0 1rem;">Salary & Benefits</h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                        <div class="form-group">
+                            <label for="{{ form.salary_min.id_for_label }}">Min Salary (LPA)</label>
+                            {{ form.salary_min }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.salary_max.id_for_label }}">Max Salary (LPA)</label>
+                            {{ form.salary_max }}
+                        </div>
+
+                        <div class="form-group">
+                            <label>Salary Currency</label>
+                            <input type="text" value="INR" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <h3 style="color: var(--primary-color); margin: 2rem 0 1rem;">Eligibility Criteria</h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                        <div class="form-group">
+                            <label for="{{ form.min_cgpa.id_for_label }}">Minimum CGPA *</label>
+                            {{ form.min_cgpa }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.allowed_branches.id_for_label }}">Allowed Branches *</label>
+                            {{ form.allowed_branches }}
+                            <div class="form-help-text">Separate branches with commas (e.g., CSE, ECE, ME)</div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: var(--primary-color); margin: 2rem 0 1rem;">Application Settings</h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                        <div class="form-group">
+                            <label for="{{ form.application_deadline.id_for_label }}">Application Deadline *</label>
+                            {{ form.application_deadline }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.max_applications.id_for_label }}">Max Applications *</label>
+                            {{ form.max_applications }}
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button type="submit" class="btn btn-success">{% if form.instance.id %}Update{% else %}Post{% endif %} Job</button>
+                        <a href="{% url 'company_jobs' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

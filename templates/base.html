@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Placement Portal{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{% url 'home' %}" class="navbar-brand">
+                📋 Placement Portal
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{% url 'job_list' %}">Jobs</a>
+                </li>
+                {% if user.is_authenticated %}
+                    {% if user.student %}
+                        <li class="nav-item">
+                            <a href="{% url 'student_dashboard' %}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'student_applications' %}">My Applications</a>
+                        </li>
+                    {% elif user.company %}
+                        <li class="nav-item">
+                            <a href="{% url 'company_dashboard' %}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'job_create' %}">Post Job</a>
+                        </li>
+                    {% endif %}
+                    {% if user.is_staff %}
+                        <li class="nav-item">
+                            <a href="{% url 'admin_dashboard' %}">Admin Panel</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+
+            <div class="user-menu">
+                {% if user.is_authenticated %}
+                    <span>{{ user.first_name }}</span>
+                    {% if user.student %}
+                        <a href="{% url 'student_profile' %}">Profile</a>
+                        <a href="{% url 'student_logout' %}">Logout</a>
+                    {% elif user.company %}
+                        <a href="{% url 'company_profile' %}">Profile</a>
+                        <a href="{% url 'company_logout' %}">Logout</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'student_login' %}">Student Login</a>
+                    <a href="{% url 'company_login' %}">Company Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- MESSAGES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="container mt-3">
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- MAIN CONTENT -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Placement Portal. All rights reserved.</p>
+            <p>Connecting Students with Opportunities</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+env/
+
+# Database
+db.sqlite3
+
+# Environment Variables
+.env
+
+# Copilot Files
+FINAL_REPORT.md
+GETTING_STARTED.md
+SETUP.md
+COMPLETION_SUMMARY.md
+
+# Logs
+*.log
+
+# VS Code
+.vscode/

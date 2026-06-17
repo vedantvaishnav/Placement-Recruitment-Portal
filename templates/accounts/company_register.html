@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Company Registration - Placement Portal{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Company Registration</h1>
+        
+        <div class="form-container">
+            <div class="card">
+                <p style="text-align: center; margin-bottom: 2rem; color: #666;">
+                    Register your company to post job opportunities and find talented candidates
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}">Email Address *</label>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}">Username *</label>
+                        {{ form.username }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.company_name.id_for_label }}">Company Name *</label>
+                        {{ form.company_name }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.industry.id_for_label }}">Industry *</label>
+                        {{ form.industry }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.phone.id_for_label }}">Contact Phone *</label>
+                        {{ form.phone }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.website.id_for_label }}">Website</label>
+                        {{ form.website }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.address.id_for_label }}">Address *</label>
+                        {{ form.address }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.city.id_for_label }}">City *</label>
+                        {{ form.city }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.state.id_for_label }}">State *</label>
+                        {{ form.state }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.password1.id_for_label }}">Password *</label>
+                        {{ form.password1 }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.password2.id_for_label }}">Confirm Password *</label>
+                        {{ form.password2 }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" style="padding: 1rem;">Register</button>
+                </form>
+
+                <p style="text-align: center; margin-top: 1.5rem;">
+                    Already have an account? <a href="{% url 'company_login' %}" style="color: var(--secondary-color);">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

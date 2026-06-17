@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Jobs - Placement Portal{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Available Jobs</h1>
+
+        <!-- Filter Section -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h3 class="card-title">Filter Jobs</h3>
+            <form method="get" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <div>
+                    <label>Search</label>
+                    <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Job title or company" class="form-control">
+                </div>
+
+                <div>
+                    <label>Location</label>
+                    <input type="text" name="location" value="{{ request.GET.location }}" placeholder="City or location" class="form-control">
+                </div>
+
+                <div>
+                    <label>Min Salary (LPA)</label>
+                    <input type="number" name="min_salary" value="{{ request.GET.min_salary }}" class="form-control">
+                </div>
+
+                <div>
+                    <label>Max Salary (LPA)</label>
+                    <input type="number" name="max_salary" value="{{ request.GET.max_salary }}" class="form-control">
+                </div>
+
+                <div>
+                    <label>Sort By</label>
+                    <select name="sort_by" class="form-control">
+                        <option value="newest" {% if request.GET.sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+                        <option value="salary_high" {% if request.GET.sort_by == 'salary_high' %}selected{% endif %}>Highest Salary</option>
+                        <option value="salary_low" {% if request.GET.sort_by == 'salary_low' %}selected{% endif %}>Lowest Salary</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; align-items: flex-end;">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Jobs List -->
+        {% if jobs %}
+            {% for job in jobs %}
+                <div class="job-card">
+                    <h2 class="job-title">{{ job.title }}</h2>
+                    <p class="job-company">{{ job.company.company_name }}</p>
+
+                    <div class="job-meta">
+                        <div class="job-meta-item">
+                            📍 {{ job.location }}
+                        </div>
+                        <div class="job-meta-item">
+                            💼 {{ job.get_job_type_display }}
+                        </div>
+                        <div class="job-meta-item">
+                            📅 Experience: {{ job.get_experience_required_display }}
+                        </div>
+                    </div>
+
+                    {% if job.salary_min and job.salary_max %}
+                        <div class="salary-range">
+                            ₹{{ job.salary_min }} - ₹{{ job.salary_max }} LPA
+                        </div>
+                    {% endif %}
+
+                    <p class="job-description">{{ job.description|truncatewords:30 }}</p>
+
+                    <div class="job-footer">
+                        <div>
+                            <p class="card-subtitle">Required Skills</p>
+                            <p style="font-size: 0.9rem;">{{ job.required_skills|truncatewords:5 }}</p>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            {% if user.is_authenticated and user.student %}
+                                {% if job.id in applied_jobs %}
+                                    <span class="skill-match" style="background: var(--warning-color);">Applied</span>
+                                {% else %}
+                                    <a href="{% url 'apply_job' job.id %}" class="btn btn-primary">Apply Now</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{% url 'student_login' %}" class="btn btn-primary">Login to Apply</a>
+                            {% endif %}
+                            <a href="{% url 'job_detail' job.id %}" class="btn btn-secondary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">« First</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">‹ Previous</a>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <span class="current">{{ num }}</span>
+                        {% else %}
+                            <a href="?page={{ num }}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Next ›</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">Last »</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="card text-center">
+                <p style="padding: 2rem;">No jobs found matching your criteria.</p>
+                <a href="{% url 'job_list' %}" class="btn btn-primary">Clear Filters</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

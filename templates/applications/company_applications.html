@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Company Applications - Placement Portal{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Application Management</h1>
+
+        <!-- Filter Section -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <form method="get" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <select name="job_id" class="form-control">
+                    <option value="">All Jobs</option>
+                    {% for job in jobs %}
+                        <option value="{{ job.id }}" {% if request.GET.job_id|stringformat:"d" == job.id|stringformat:"d" %}selected{% endif %}>
+                            {{ job.title }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <select name="status" class="form-control">
+                    <option value="">All Status</option>
+                    {% for status_code, status_name in status_choices %}
+                        <option value="{{ status_code }}" {% if request.GET.status == status_code %}selected{% endif %}>
+                            {{ status_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+        </div>
+
+        <!-- Applications Table -->
+        {% if applications %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Roll Number</th>
+                            <th>Job Title</th>
+                            <th>Applied On</th>
+                            <th>Status</th>
+                            <th>Skill Match</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                            <tr>
+                                <td>{{ app.student.user.first_name }} {{ app.student.user.last_name }}</td>
+                                <td>{{ app.student.roll_no }}</td>
+                                <td>{{ app.job.title }}</td>
+                                <td>{{ app.applied_on|date:"M d, Y" }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ app.status|lower }}">
+                                        {{ app.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div style="width: 100px;">
+                                        <div style="background: #ecf0f1; border-radius: 4px; height: 8px; overflow: hidden;">
+                                            <div style="background: var(--secondary-color); height: 100%; width: {{ app.skill_match_percentage }}%;"></div>
+                                        </div>
+                                        <span style="font-size: 0.8rem;">{{ app.skill_match_percentage }}%</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="{% url 'application_detail' app.id %}" class="btn btn-sm btn-primary">View</a>
+                                    <a href="{% url 'update_application_status' app.id %}" class="btn btn-sm btn-secondary">Update</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">« First</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">‹ Prev</a>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <span class="current">{{ num }}</span>
+                        {% else %}
+                            <a href="?page={{ num }}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Next ›</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">Last »</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="card text-center">
+                <p style="padding: 2rem;">No applications found.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

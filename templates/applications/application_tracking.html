@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}Application Tracking - Placement Portal{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Application Tracking</h1>
+
+        <div class="dashboard-container">
+            <div class="stat-card">
+                <div class="stat-label">Total Applications</div>
+                <div class="stat-value">{{ total }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Applied</div>
+                <div class="stat-value" style="color: #3498db;">{{ applied|length }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Shortlisted</div>
+                <div class="stat-value" style="color: #f39c12;">{{ shortlisted|length }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Selected</div>
+                <div class="stat-value" style="color: var(--success-color);">{{ selected|length }}</div>
+            </div>
+        </div>
+
+        <!-- Applied -->
+        {% if applied %}
+            <div class="card" style="margin-top: 2rem;">
+                <h2 class="card-title">📝 Applied ({{ applied|length }})</h2>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Applied On</th>
+                            <th>Skill Match</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applied %}
+                            <tr>
+                                <td><strong>{{ app.job.title }}</strong></td>
+                                <td>{{ app.job.company.company_name }}</td>
+                                <td>{{ app.applied_on|date:"M d, Y" }}</td>
+                                <td>{{ app.skill_match_percentage }}%</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        <!-- Shortlisted -->
+        {% if shortlisted %}
+            <div class="card" style="margin-top: 2rem;">
+                <h2 class="card-title">🎯 Shortlisted ({{ shortlisted|length }})</h2>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Shortlisted On</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in shortlisted %}
+                            <tr>
+                                <td><strong>{{ app.job.title }}</strong></td>
+                                <td>{{ app.job.company.company_name }}</td>
+                                <td>{{ app.last_updated|date:"M d, Y" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        <!-- Interview -->
+        {% if interview %}
+            <div class="card" style="margin-top: 2rem;">
+                <h2 class="card-title">💬 Interview Round ({{ interview|length }})</h2>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Status Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in interview %}
+                            <tr>
+                                <td><strong>{{ app.job.title }}</strong></td>
+                                <td>{{ app.job.company.company_name }}</td>
+                                <td>{{ app.last_updated|date:"M d, Y" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        <!-- Selected -->
+        {% if selected %}
+            <div class="card" style="margin-top: 2rem;">
+                <h2 class="card-title">✅ Selected ({{ selected|length }})</h2>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Selected On</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in selected %}
+                            <tr>
+                                <td><strong>{{ app.job.title }}</strong></td>
+                                <td>{{ app.job.company.company_name }}</td>
+                                <td>{{ app.last_updated|date:"M d, Y" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        <!-- Rejected -->
+        {% if applications|length > applied|length|add:shortlisted|length|add:selected|length|add:interview|length %}
+            <div class="card" style="margin-top: 2rem;">
+                <h2 class="card-title">❌ Rejected</h2>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Rejected On</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                            {% if app.status == 'REJECTED' %}
+                                <tr>
+                                    <td><strong>{{ app.job.title }}</strong></td>
+                                    <td>{{ app.job.company.company_name }}</td>
+                                    <td>{{ app.last_updated|date:"M d, Y" }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

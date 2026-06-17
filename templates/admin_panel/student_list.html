@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Students - Admin Panel{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Manage Students</h1>
+
+        <!-- Filter Form -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <form method="get" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <input type="text" name="search" placeholder="Name or roll number" value="{{ request.GET.search }}" class="form-control">
+                
+                <select name="branch" class="form-control">
+                    <option value="">All Branches</option>
+                    <option value="CSE" {% if request.GET.branch == 'CSE' %}selected{% endif %}>CSE</option>
+                    <option value="ECE" {% if request.GET.branch == 'ECE' %}selected{% endif %}>ECE</option>
+                    <option value="ME" {% if request.GET.branch == 'ME' %}selected{% endif %}>ME</option>
+                </select>
+
+                <select name="placed" class="form-control">
+                    <option value="">All Status</option>
+                    <option value="true" {% if request.GET.placed == 'true' %}selected{% endif %}>Placed</option>
+                    <option value="false" {% if request.GET.placed == 'false' %}selected{% endif %}>Not Placed</option>
+                </select>
+
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+        </div>
+
+        <!-- Students Table -->
+        {% if students %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Roll Number</th>
+                            <th>Name</th>
+                            <th>Branch</th>
+                            <th>Year</th>
+                            <th>CGPA</th>
+                            <th>Applications</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td>{{ student.roll_no }}</td>
+                                <td>{{ student.user.first_name }} {{ student.user.last_name }}</td>
+                                <td>{{ student.get_branch_display }}</td>
+                                <td>{{ student.get_year_display }}</td>
+                                <td>{{ student.cgpa }}</td>
+                                <td>{{ student.applied_jobs }}</td>
+                                <td>
+                                    {% if student.placed %}
+                                        <span class="status-badge status-selected">Placed at {{ student.placement_offer }}</span>
+                                    {% else %}
+                                        <span class="status-badge status-applied">Not Placed</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">« First</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">‹ Prev</a>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <span class="current">{{ num }}</span>
+                        {% else %}
+                            <a href="?page={{ num }}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Next ›</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">Last »</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="card text-center">
+                <p style="padding: 2rem;">No students found.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

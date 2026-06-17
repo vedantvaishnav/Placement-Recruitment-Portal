@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Companies - Admin Panel{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Manage Companies</h1>
+
+        <!-- Filter Form -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <form method="get" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                <input type="text" name="search" placeholder="Company name" value="{{ request.GET.search }}" class="form-control">
+                
+                <select name="verified" class="form-control">
+                    <option value="">All Companies</option>
+                    <option value="true" {% if request.GET.verified == 'true' %}selected{% endif %}>Verified</option>
+                    <option value="false" {% if request.GET.verified == 'false' %}selected{% endif %}>Pending Verification</option>
+                </select>
+
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+        </div>
+
+        <!-- Companies Table -->
+        {% if companies %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Company Name</th>
+                            <th>Industry</th>
+                            <th>Location</th>
+                            <th>Jobs Posted</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for company in companies %}
+                            <tr>
+                                <td><strong>{{ company.company_name }}</strong></td>
+                                <td>{{ company.industry }}</td>
+                                <td>{{ company.city }}, {{ company.state }}</td>
+                                <td>{{ company.jobs_posted }}</td>
+                                <td>
+                                    {% if company.verified %}
+                                        <span class="status-badge status-selected">Verified ✓</span>
+                                    {% else %}
+                                        <span class="status-badge" style="background: #fff3cd; color: #664d03;">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if not company.verified %}
+                                        <a href="{% url 'verify_company' company.id %}" class="btn btn-sm btn-success">Verify</a>
+                                    {% else %}
+                                        <a href="{% url 'verify_company' company.id %}" class="btn btn-sm btn-danger">Revoke</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">« First</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">‹ Prev</a>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <span class="current">{{ num }}</span>
+                        {% else %}
+                            <a href="?page={{ num }}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Next ›</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">Last »</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="card text-center">
+                <p style="padding: 2rem;">No companies found.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Verify Company - Admin Panel{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Verify Company</h1>
+
+        <div class="form-container">
+            <div class="card">
+                <p style="margin-bottom: 1.5rem;">
+                    <strong>Company Name:</strong> {{ object.company_name }}<br>
+                    <strong>Industry:</strong> {{ object.industry }}<br>
+                    <strong>Location:</strong> {{ object.city }}, {{ object.state }}<br>
+                    <strong>Current Status:</strong> 
+                    {% if object.verified %}
+                        <span class="status-badge status-selected">Verified</span>
+                    {% else %}
+                        <span class="status-badge" style="background: #fff3cd; color: #664d03;">Pending</span>
+                    {% endif %}
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.verified.id_for_label }}">
+                            {{ form.verified }} Mark as Verified
+                        </label>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn btn-success">Update Status</button>
+                        <a href="{% url 'admin_companies' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

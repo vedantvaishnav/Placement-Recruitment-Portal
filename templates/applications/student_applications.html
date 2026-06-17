@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}My Applications - Placement Portal{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">My Applications</h1>
+
+        <div class="card" style="margin-bottom: 2rem;">
+            <a href="{% url 'job_list' %}" class="btn btn-primary">+ Apply for More Jobs</a>
+        </div>
+
+        {% if applications %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Applied On</th>
+                            <th>Status</th>
+                            <th>Skill Match</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                            <tr>
+                                <td><strong>{{ app.job.title }}</strong></td>
+                                <td>{{ app.job.company.company_name }}</td>
+                                <td>{{ app.applied_on|date:"M d, Y" }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ app.status|lower }}">
+                                        {{ app.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div style="width: 100px;">
+                                        <div style="background: #ecf0f1; border-radius: 4px; height: 8px; overflow: hidden;">
+                                            <div style="background: var(--secondary-color); height: 100%; width: {{ app.skill_match_percentage }}%;"></div>
+                                        </div>
+                                        <span style="font-size: 0.8rem; color: #666;">{{ app.skill_match_percentage }}%</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="{% url 'application_detail' app.id %}" class="btn btn-sm btn-primary">View</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">« First</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">‹ Previous</a>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <span class="current">{{ num }}</span>
+                        {% else %}
+                            <a href="?page={{ num }}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Next ›</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">Last »</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="card text-center">
+                <p style="padding: 2rem;">You haven't applied for any jobs yet.</p>
+                <a href="{% url 'job_list' %}" class="btn btn-primary">Browse Jobs</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

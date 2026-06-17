@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Registration - Placement Portal{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Student Registration</h1>
+        
+        <div class="form-container">
+            <div class="card">
+                <p style="text-align: center; margin-bottom: 2rem; color: #666;">
+                    Create your student profile to explore job opportunities
+                </p>
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-error">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="post" class="form">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id_for_label }}">First Name *</label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <div class="form-help-text" style="color: red;">{{ form.first_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id_for_label }}">Last Name *</label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <div class="form-help-text" style="color: red;">{{ form.last_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}">Email Address *</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="form-help-text" style="color: red;">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}">Username *</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="form-help-text" style="color: red;">{{ form.username.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.roll_no.id_for_label }}">Roll Number *</label>
+                        {{ form.roll_no }}
+                        {% if form.roll_no.errors %}
+                            <div class="form-help-text" style="color: red;">{{ form.roll_no.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.phone.id_for_label }}">Phone Number *</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                            <div class="form-help-text" style="color: red;">{{ form.phone.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.branch.id_for_label }}">Branch *</label>
+                        {{ form.branch }}
+                        {% if form.branch.errors %}
+                            <div class="form-help-text" style="color: red;">{{ form.branch.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.year.id_for_label }}">Year *</label>
+                        {{ form.year }}
+                        {% if form.year.errors %}
+                            <div class="form-help-text" style="color: red;">{{ form.year.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.password1.id_for_label }}">Password *</label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}
+                            <div class="form-help-text" style="color: red;">
+                                {% for error in form.password1.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if form.password1.help_text %}
+                            <div class="form-help-text">{{ form.password1.help_text|safe }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.password2.id_for_label }}">Confirm Password *</label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}
+                            <div class="form-help-text" style="color: red;">
+                                {% for error in form.password2.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if form.password2.help_text %}
+                            <div class="form-help-text">{{ form.password2.help_text|safe }}</div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" style="padding: 1rem;">Register</button>
+                </form>
+
+                <p style="text-align: center; margin-top: 1.5rem;">
+                    Already have an account? <a href="{% url 'student_login' %}" style="color: var(--secondary-color);">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

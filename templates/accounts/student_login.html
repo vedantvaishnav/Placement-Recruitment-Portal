@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Login - Placement Portal{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Student Login</h1>
+        
+        <div class="form-container">
+            <div class="card">
+                <p style="text-align: center; margin-bottom: 2rem; color: #666;">
+                    Login to your student account to access job opportunities
+                </p>
+
+                <form method="post" class="form">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}">Username *</label>
+                        {{ form.username }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.password.id_for_label }}">Password *</label>
+                        {{ form.password }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" style="padding: 1rem;">Login</button>
+                </form>
+
+                <p style="text-align: center; margin-top: 1.5rem;">
+                    Don't have an account? <a href="{% url 'student_register' %}" style="color: var(--secondary-color);">Register here</a>
+                </p>
+                <p style="text-align: center; margin-top: 0.5rem;">
+                    <a href="{% url 'company_login' %}" style="color: var(--secondary-color);">Login as Company</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Application Detail - Placement Portal{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Application Details</h1>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <!-- Application Info -->
+            <div>
+                <div class="card">
+                    <h2 class="card-title">{{ application.job.title }}</h2>
+                    <p class="job-company">{{ application.job.company.company_name }}</p>
+
+                    <div style="margin: 1.5rem 0;">
+                        <p class="card-subtitle">Application Status</p>
+                        <span class="status-badge status-{{ application.status|lower }}" style="font-size: 1rem; padding: 0.75rem 1.5rem;">
+                            {{ application.get_status_display }}
+                        </span>
+                    </div>
+
+                    <div style="margin: 1.5rem 0;">
+                        <p class="card-subtitle">Applied On</p>
+                        <p>{{ application.applied_on|date:"M d, Y H:i" }}</p>
+                    </div>
+
+                    <div style="margin: 1.5rem 0;">
+                        <p class="card-subtitle">Last Updated</p>
+                        <p>{{ application.last_updated|date:"M d, Y H:i" }}</p>
+                    </div>
+
+                    {% if application.cover_letter %}
+                        <div style="margin: 1.5rem 0;">
+                            <p class="card-subtitle">Cover Letter</p>
+                            <div style="background: #f5f5f5; padding: 1rem; border-radius: 4px; white-space: pre-wrap;">
+                                {{ application.cover_letter }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if application.notes %}
+                        <div style="margin: 1.5rem 0;">
+                            <p class="card-subtitle">Feedback from Company</p>
+                            <div style="background: #f5f5f5; padding: 1rem; border-radius: 4px; border-left: 4px solid var(--secondary-color);">
+                                {{ application.notes }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="card" style="margin-top: 2rem;">
+                    <h3 class="card-title">Job Details</h3>
+                    <ul style="margin-left: 1.5rem;">
+                        <li><strong>Location:</strong> {{ application.job.location }}</li>
+                        <li><strong>Type:</strong> {{ application.job.get_job_type_display }}</li>
+                        {% if application.job.salary_min and application.job.salary_max %}
+                            <li><strong>Salary:</strong> ₹{{ application.job.salary_min }} - ₹{{ application.job.salary_max }} LPA</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div>
+                <!-- Skill Match -->
+                <div class="card">
+                    <h3 class="card-title">Skill Match</h3>
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; font-weight: bold; color: var(--secondary-color);">
+                            {{ application.skill_match_percentage }}%
+                        </div>
+                        <div style="background: #ecf0f1; border-radius: 8px; height: 12px; margin: 1rem 0; overflow: hidden;">
+                            <div style="background: var(--secondary-color); height: 100%; width: {{ application.skill_match_percentage }}%;"></div>
+                        </div>
+                        <p style="color: #666; font-size: 0.9rem;">Your skills match {{ application.skill_match_percentage }}% of job requirements</p>
+                    </div>
+                </div>
+
+                <!-- Your Profile -->
+                <div class="card" style="margin-top: 1.5rem;">
+                    <h3 class="card-title">Your Profile</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <p class="card-subtitle">Name</p>
+                        <p>{{ application.student.user.first_name }} {{ application.student.user.last_name }}</p>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <p class="card-subtitle">CGPA</p>
+                        <p>{{ application.student.cgpa }}</p>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <p class="card-subtitle">Branch</p>
+                        <p>{{ application.student.get_branch_display }}</p>
+                    </div>
+                    {% if application.student.resume %}
+                        <a href="{{ application.student.resume.url }}" class="btn btn-primary" style="width: 100%; text-align: center;" download>Download Resume</a>
+                    {% endif %}
+                </div>
+
+                <!-- Company Info -->
+                <div class="card" style="margin-top: 1.5rem;">
+                    <h3 class="card-title">Company</h3>
+                    <p>{{ application.job.company.company_name }}</p>
+                    <p style="font-size: 0.9rem; color: #666;">{{ application.job.company.industry }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 2rem;">
+            <a href="{% url 'student_applications' %}" class="btn btn-secondary">← Back to Applications</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

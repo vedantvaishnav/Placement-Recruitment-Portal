@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ job.title }} - Placement Portal{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">{{ job.title }}</h1>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <!-- Job Details -->
+            <div>
+                <div class="card">
+                    <h2 class="card-title">About This Job</h2>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">Company</h3>
+                        <p>{{ job.company.company_name }}</p>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">Description</h3>
+                        <p style="white-space: pre-wrap;">{{ job.description }}</p>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">Required Skills</h3>
+                        <p>
+                            {% for skill in job.get_required_skills_list %}
+                                <span style="background: var(--light-color); padding: 0.25rem 0.75rem; border-radius: 20px; margin-right: 0.5rem; display: inline-block; margin-bottom: 0.25rem;">{{ skill }}</span>
+                            {% endfor %}
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">Job Details</h3>
+                        <ul style="margin-left: 1.5rem;">
+                            <li><strong>Job Type:</strong> {{ job.get_job_type_display }}</li>
+                            <li><strong>Experience Required:</strong> {{ job.get_experience_required_display }}</li>
+                            <li><strong>Location:</strong> {{ job.location }}</li>
+                            <li><strong>Qualification:</strong> {{ job.get_qualification_required_display }}</li>
+                            <li><strong>Min CGPA:</strong> {{ job.min_cgpa }}</li>
+                            <li><strong>Allowed Branches:</strong> {% for branch in job.get_allowed_branches_list %}{{ branch }}{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+                            <li><strong>Posted On:</strong> {{ job.posted_on|date:"M d, Y" }}</li>
+                            <li><strong>Deadline:</strong> {{ job.application_deadline|date:"M d, Y H:i" }}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                {% if user.is_authenticated and user.student %}
+                    <div class="card" style="margin-top: 2rem;">
+                        <h2 class="card-title">Your Profile Match</h2>
+                        {% if can_apply %}
+                            <div class="alert alert-success">Your profile meets the eligibility criteria!</div>
+                        {% else %}
+                            <div class="alert alert-warning">
+                                ⚠️ Eligibility Issue: {{ reason }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div>
+                <!-- Salary -->
+                <div class="card">
+                    <h3 class="card-title">Salary</h3>
+                    {% if job.salary_min and job.salary_max %}
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--success-color);">
+                            ₹{{ job.salary_min }} - ₹{{ job.salary_max }} LPA
+                        </div>
+                    {% else %}
+                        <p>Salary not disclosed</p>
+                    {% endif %}
+                </div>
+
+                <!-- Company Info -->
+                <div class="card" style="margin-top: 1.5rem;">
+                    <h3 class="card-title">Company Info</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <p class="card-subtitle">{{ job.company.company_name }}</p>
+                        <p style="color: #666;">{{ job.company.industry }}</p>
+                    </div>
+                    <p style="font-size: 0.9rem;">{{ job.company.description }}</p>
+                    {% if job.company.website %}
+                        <a href="{{ job.company.website }}" target="_blank" class="btn btn-sm btn-secondary" style="width: 100%; text-align: center; margin-top: 0.5rem;">Visit Website</a>
+                    {% endif %}
+                </div>
+
+                <!-- Application Stats -->
+                <div class="card" style="margin-top: 1.5rem;">
+                    <h3 class="card-title">Application Stats</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <p class="card-subtitle">Applications</p>
+                        <p>{{ job.applications_received }} / {{ job.max_applications }}</p>
+                        <div style="background: #ecf0f1; border-radius: 4px; height: 8px; margin-top: 0.5rem; overflow: hidden;">
+                            <div style="background: var(--secondary-color); height: 100%; width: {{ job.applications_received|divide:job.max_applications|multiply:100 }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Apply Button -->
+                <div class="card" style="margin-top: 1.5rem;">
+                    {% if user.is_authenticated and user.student %}
+                        {% if already_applied %}
+                            <div class="alert alert-info" style="margin-bottom: 1rem;">
+                                ✓ You have already applied for this job
+                            </div>
+                            <a href="{% url 'student_applications' %}" class="btn btn-primary" style="width: 100%; text-align: center;">View My Application</a>
+                        {% elif can_apply %}
+                            <a href="{% url 'apply_job' job.id %}" class="btn btn-success" style="width: 100%; text-align: center; padding: 1rem;">Apply for This Job</a>
+                        {% else %}
+                            <button class="btn btn-secondary" style="width: 100%; cursor: not-allowed;">Cannot Apply</button>
+                        {% endif %}
+                    {% elif user.is_authenticated and user.company %}
+                        {% if job.company == user.company %}
+                            <a href="{% url 'job_edit' job.id %}" class="btn btn-primary" style="width: 100%; text-align: center;">Edit Job</a>
+                        {% else %}
+                            <p style="color: #666; text-align: center;">Company posting</p>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'student_login' %}" class="btn btn-primary" style="width: 100%; text-align: center;">Login to Apply</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 2rem;">
+            <a href="{% url 'job_list' %}" class="btn btn-secondary">← Back to Jobs</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

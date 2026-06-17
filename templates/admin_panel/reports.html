@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports - Admin Panel{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Placement Reports</h1>
+
+        <!-- Branch-wise Placement -->
+        <div class="card">
+            <h2 class="card-title">Branch-wise Placement Statistics</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Branch</th>
+                        <th>Total Students</th>
+                        <th>Placed</th>
+                        <th>Placement %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in branch_placement %}
+                        <tr>
+                            <td>{{ item.branch }}</td>
+                            <td>{{ item.total }}</td>
+                            <td>{{ item.placed }}</td>
+                            <td>
+                                {% if item.total > 0 %}
+                                    {{ percent|stringformat:"d" }}%
+                                {% else %}
+                                    0%
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" style="text-align: center;">No data available</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Top Recruiting Companies -->
+        <div class="card" style="margin-top: 2rem;">
+            <h2 class="card-title">Top Recruiting Companies</h2>
+            {% if top_companies %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Students Placed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for company in top_companies %}
+                            <tr>
+                                <td>{{ company.company_name }}</td>
+                                <td><strong>{{ company.placed_count }}</strong></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p style="text-align: center;">No placements recorded yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Year Distribution -->
+        <div class="card" style="margin-top: 2rem;">
+            <h2 class="card-title">Student Distribution by Year</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Number of Students</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in year_distribution %}
+                        <tr>
+                            <td>{{ item.year }} Year</td>
+                            <td>{{ item.count }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="2" style="text-align: center;">No data</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card" style="margin-top: 2rem;">
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

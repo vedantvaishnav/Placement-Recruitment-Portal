@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard - Placement Portal{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Student Dashboard</h1>
+
+        <!-- Dashboard Stats -->
+        <div class="dashboard-container">
+            <div class="stat-card">
+                <div class="stat-label">Total Applications</div>
+                <div class="stat-value">{{ total_applications }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Shortlisted</div>
+                <div class="stat-value" style="color: var(--info-color);">{{ shortlisted }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Selected</div>
+                <div class="stat-value" style="color: var(--success-color);">{{ selected }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Rejected</div>
+                <div class="stat-value" style="color: var(--danger-color);">{{ rejected }}</div>
+            </div>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="card" style="margin-top: 2rem;">
+            <h2 class="card-title">Your Profile</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                <div>
+                    <p class="card-subtitle">Name</p>
+                    <p>{{ student.user.first_name }} {{ student.user.last_name }}</p>
+                </div>
+                <div>
+                    <p class="card-subtitle">Roll Number</p>
+                    <p>{{ student.roll_no }}</p>
+                </div>
+                <div>
+                    <p class="card-subtitle">Branch</p>
+                    <p>{{ student.branch }}</p>
+                </div>
+                <div>
+                    <p class="card-subtitle">Year</p>
+                    <p>{{ student.get_year_display }}</p>
+                </div>
+                <div>
+                    <p class="card-subtitle">CGPA</p>
+                    <p>{{ student.cgpa }}</p>
+                </div>
+                <div>
+                    <p class="card-subtitle">Phone</p>
+                    <p>{{ student.phone }}</p>
+                </div>
+            </div>
+            <div style="margin-top: 1.5rem;">
+                <p class="card-subtitle">Skills</p>
+                <p>{{ student.skills }}</p>
+            </div>
+            {% if student.resume %}
+                <div style="margin-top: 1rem;">
+                    <p class="card-subtitle">Resume</p>
+                    <a href="{{ student.resume.url }}" class="btn btn-sm btn-primary" download>Download Resume</a>
+                </div>
+            {% endif %}
+            <div style="margin-top: 1.5rem;">
+                <a href="{% url 'student_profile' %}" class="btn btn-primary">Edit Profile</a>
+            </div>
+        </div>
+
+        <!-- Recent Applications -->
+        <div class="card" style="margin-top: 2rem;">
+            <h2 class="card-title">Recent Applications</h2>
+            {% if applications %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Company</th>
+                                <th>Applied On</th>
+                                <th>Status</th>
+                                <th>Skill Match</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in applications|slice:":5" %}
+                                <tr>
+                                    <td>{{ app.job.title }}</td>
+                                    <td>{{ app.job.company.company_name }}</td>
+                                    <td>{{ app.applied_on|date:"M d, Y" }}</td>
+                                    <td>
+                                        <span class="status-badge status-{{ app.status|lower }}">
+                                            {{ app.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ app.skill_match_percentage }}%</td>
+                                    <td>
+                                        <a href="{% url 'application_detail' app.pk %}" class="btn btn-sm btn-primary">View</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="{% url 'student_applications' %}" class="btn btn-primary">View All Applications</a>
+                </div>
+            {% else %}
+                <p style="text-align: center; color: #666;">No applications yet. <a href="{% url 'job_list' %}">Browse jobs</a></p>
+            {% endif %}
+        </div>
+
+        <!-- Quick Links -->
+        <div class="card" style="margin-top: 2rem;">
+            <h2 class="card-title">Quick Links</h2>
+            <div class="btn-group" style="gap: 1rem;">
+                <a href="{% url 'job_list' %}" class="btn btn-primary">Browse Jobs</a>
+                <a href="{% url 'application_tracking' %}" class="btn btn-secondary">Track Applications</a>
+                <a href="{% url 'student_profile' %}" class="btn btn-secondary">Update Profile</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

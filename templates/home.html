@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}Placement Portal - Home{% endblock %}
+
+{% block content %}
+<section class="section" style="background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); color: white; padding: 4rem 0;">
+    <div class="container">
+        <div style="text-align: center;">
+            <h1 style="font-size: 3rem; margin-bottom: 1rem;">Welcome to Placement Portal</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">Connecting Students with Career Opportunities</p>
+            
+            {% if not user.is_authenticated %}
+                <div class="btn-group" style="justify-content: center;">
+                    <a href="{% url 'student_login' %}" class="btn btn-primary">Student Login</a>
+                    <a href="{% url 'student_register' %}" class="btn btn-success">Student Register</a>
+                    <a href="{% url 'company_login' %}" class="btn btn-primary">Company Login</a>
+                    <a href="{% url 'company_register' %}" class="btn btn-success">Company Register</a>
+                </div>
+            {% else %}
+                {% if user.student %}
+                    <a href="{% url 'job_list' %}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">Browse Jobs</a>
+                {% elif user.company %}
+                    <a href="{% url 'job_create' %}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">Post a Job</a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Features</h2>
+        
+        <div class="dashboard-container">
+            <div class="card">
+                <h3 class="card-title">👤 Student Registration</h3>
+                <p>Register with your college details and create your professional profile. Upload your resume and showcase your skills.</p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">🏢 Company Registration</h3>
+                <p>Register your company and post job opportunities. Browse applications and manage your hiring process efficiently.</p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">💼 Job Postings</h3>
+                <p>Find thousands of job opportunities matched to your skills and qualifications. Filter by location, salary, and job type.</p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">📊 Skill Matching</h3>
+                <p>Our advanced skill matching algorithm shows you the best opportunities that match your expertise.</p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">📈 Application Tracking</h3>
+                <p>Track all your applications in one place. Get real-time updates on your application status.</p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">📋 Admin Dashboard</h3>
+                <p>Complete portal statistics, company verification, and comprehensive reporting for administrators.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="background: #ecf0f1;">
+    <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+            <div class="card">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">1️⃣</div>
+                <h4 style="color: var(--secondary-color); margin-bottom: 0.5rem;">Create Your Profile</h4>
+                <p>Register as a student or company and complete your profile with relevant information.</p>
+            </div>
+
+            <div class="card">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">2️⃣</div>
+                <h4 style="color: var(--secondary-color); margin-bottom: 0.5rem;">Find Opportunities</h4>
+                <p>Students browse jobs, companies post openings. Use advanced filters to find matches.</p>
+            </div>
+
+            <div class="card">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">3️⃣</div>
+                <h4 style="color: var(--secondary-color); margin-bottom: 0.5rem;">Apply & Connect</h4>
+                <p>Students apply to jobs, companies review applications and conduct interviews.</p>
+            </div>
+
+            <div class="card">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">4️⃣</div>
+                <h4 style="color: var(--secondary-color); margin-bottom: 0.5rem;">Get Placed</h4>
+                <p>Receive offers, accept positions, and start your career journey with us!</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">For Students</h2>
+        <div class="card">
+            <ul style="margin-left: 2rem;">
+                <li>✓ Create a professional profile and upload your resume</li>
+                <li>✓ Browse thousands of job opportunities</li>
+                <li>✓ Get skill-matched job recommendations</li>
+                <li>✓ Apply for jobs with custom cover letters</li>
+                <li>✓ Track application status in real-time</li>
+                <li>✓ View placement statistics and salary information</li>
+                <li>✓ Build your network with companies</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="background: #ecf0f1;">
+    <div class="container">
+        <h2 class="section-title">For Companies</h2>
+        <div class="card">
+            <ul style="margin-left: 2rem;">
+                <li>✓ Register your company and create company profile</li>
+                <li>✓ Post unlimited job openings</li>
+                <li>✓ Receive applications from qualified candidates</li>
+                <li>✓ Use skill matching to find the best fits</li>
+                <li>✓ Manage application workflow and status tracking</li>
+                <li>✓ Access candidate details and resumes</li>
+                <li>✓ Track hiring metrics and analytics</li>
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}
